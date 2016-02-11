@@ -1,0 +1,73 @@
+NAME: Jian Chern Tan
+Netid: jctan93
+
+----------------------------------------
+
+SimpleHero: Does not avoid enemies, it seeks the nearest strongly connected eatable.
+
+SmartHero: If an enemy is close by, it heads for the eatable that is furthest from all enemies, otherwise it heads for the closest eatable
+
+SmartPowerup: Heads for the closest enemy, if a hero is nearby, it takes evasive manouvers
+
+SmartEnemy: Heads for an eatable close to the herp, if a hero is nearby, it heads for it. If only a few eatables remain, it heads for the eatables
+
+----------------------------------------
+
+Assumptions
+The hero stops moving if no strongly connected reachable eatable is found. (PART A)
+
+PARTB
+-FOR SMART ENEMY: I AM ASSUMING THAT THERE WILL BE HEROES OR EATABLES ON THE MAP (BECAUSE THE GAME WOULD NOT BE IN A VALID STATE OTHERWISE)
+
+-FOR SMART POWERUP: I AM ASSUMING THAT THERE WILL BE HEROES ON THE BOARD, BECAUSE IF THERE IS/ARE NO HEROES "THIS KILLS THE PROGRAM"
+
+-FOR SMART HERO: I AM ASSUMING THERE ARE EATABLES ON THE BOARD
+
+----------------------------------------
+
+SimpleHero.cpp / SimpleHero.hpp: 
+-The method first iterates through all possible vertices to find all the eatables (including powerups);
+
+-It then iterates through all the eatables to find all the eatables that can be reached from the hero's current position;
+
+-If an eatable can be reached from the current position, it is added to a "reachable" array and the distance is reccorded;
+
+-The method then looks for a strongly connected reachable eatable with the shortest distance;
+
+-If no strongly connected reachable is found, the hero stays in place (return 0);
+
+-If a strongly connected reachable eatable is found, the method then does a BFS to find a path to the eatable;
+
+-Once the path is found, a traceback is done to find the vertex to move to.
+
+- Helper methods are "canBeReached" which performs a breadth first search from the origin to the destination (parameters),
+  it returns the distance from the origin to the destination. The other helper method is "connected" which checks to see if the eatable passed into it can reach all the eatables in the eatables array passed into it (Basically checks to see if an eatable is strongly connected);
+  
+----------------
+  
+SmartHero:
+- It finds the shortest path to an eatable that doesnt involve encountering an enemy
+
+- It takes evasive manouvers if an enemy is within 2 spaces of it (Distance is calculated from the enemy's position to the hero, not from the hero to the enemy, to avoid taking unnecessary evasive manouvers while an enemy is on a treadmill)
+
+- Evasive manouvers are: If an enemy is close by, it heads for the eatable that is furthest from all enemies, otherwise it heads for the closest eatable
+
+-The neighbor to return is one that is not a neighbor of any enemy, if it can't find one, it stands still until one is available or until it gets eaten
+
+-Additional helper methods were added, vertexToReturn is a BFS method that returns the vertex to move to. The path it takes could have enemies along the way.
+ShelbieSimmonsMethod and ShelbieSimmonsMethodDistance are modifications of the BFS method (based on one of Shelbie Simmons' comments on Piazza) that function almost exactly the same as vertexToReturn and canBeReached respectively. The only difference here is that an enemy array is passed in and vertices with enemies on them are avoided when BFS-ing.
+
+----------------
+
+SmartPowerup: HEADS FOR THE CLOSEST ENEMY AND TAKES EVASIVE MANOUVERS IF A HERO IS CLOSE BY (within 2 moves)
+
+-Evasive manouvers: finds a neighbhor that has the furthest distance from the hero
+
+- Helper methods are vertexToReturn and canBeReached which have been explained above
+
+----------------
+
+SmartEnemy: Main objective is to head for an eatable within x number of moves of the closest hero, If a hero comes within 2 moves of it, it's main goal
+is to chase that hero.
+
+- Helper methods are vertexToReturn and canBeReached which have been explained above
